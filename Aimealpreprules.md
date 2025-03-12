@@ -52,7 +52,7 @@
 
 ---  
 
-**TRINN 5: "VET IKKE HVAD JEG SKAL LAGE"-SPØRRESKJEMA**  
+**TRINN 5: "VET IKKE HVA JEG SKAL LAGE"-SPØRRESKJEMA**  
 - **Spørsmål:**  
   1. "Hva slags stemning ønsker du?" (flervalg: Kos, Fitness, Fest, Familiemiddag, Eksperimentelt).  
   2. "Tilgjengelig tid?" (slider: 10–60 minutter).  
