@@ -3,19 +3,48 @@ import Link from 'next/link';
 import { useAuth } from '../contexts/AuthContext';
 import { useRouter } from 'next/router';
 import LoadingScreen from '../components/common/LoadingScreen';
+import { useState } from 'react';
 
 export default function Home() {
   const { user, signOut, error, loading } = useAuth();
   const router = useRouter();
+  const [openFaqIndex, setOpenFaqIndex] = useState(null);
 
   const handleGenerateMeal = () => {
     if (!user) {
-      router.push('/login');
+      router.push('/demo');
     } else {
       // Will implement meal generation in TRINN 4
       console.log('Meal generation coming soon!');
     }
   };
+
+  const toggleFaq = (index) => {
+    setOpenFaqIndex(openFaqIndex === index ? null : index);
+  };
+
+  const faqItems = [
+    {
+      question: "Hvordan fungerer Smarte måltider?",
+      answer: "Smarte måltider bruker kunstig intelligens for å generere personlige måltidsplaner basert på dine preferanser, tilgjengelige ingredienser, og ernæringsmål. Du kan enkelt skanne ingredienser, angi dine mål, og få skreddersydde oppskrifter på sekunder."
+    },
+    {
+      question: "Er tjenesten gratis?",
+      answer: "Vi tilbyr en gratis versjon med begrenset funksjonalitet. For full tilgang til alle funksjoner, inkludert ubegrenset måltidsgenerering, næringsanalyse og personlig tilpasning, tilbyr vi rimelige medlemskapsplaner."
+    },
+    {
+      question: "Kan jeg bruke appen hvis jeg har matallergier?",
+      answer: "Absolutt! Du kan angi alle dine matallergier og intoleranser i profilen din, og AI-en vår vil alltid ta hensyn til disse når den genererer måltidsforslag til deg."
+    },
+    {
+      question: "Hvordan hjelper appen med å redusere matsvinn?",
+      answer: "Appen lar deg skanne eller registrere ingrediensene du allerede har hjemme, og genererer deretter oppskrifter som bruker disse ingrediensene før de blir dårlige. Dette hjelper deg å redusere matsvinn og spare penger."
+    },
+    {
+      question: "Kan jeg tilpasse måltidene etter mine treningsmål?",
+      answer: "Ja, enten du ønsker å bygge muskler, gå ned i vekt, eller bare opprettholde en sunn livsstil, kan du angi dine mål og appen vil justere måltidsforslagene for å hjelpe deg å nå disse målene."
+    }
+  ];
 
   if (loading) {
     return <LoadingScreen />;
@@ -24,7 +53,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-r from-orange-400 to-orange-600">
       <Head>
-        <title>AI Meal Prep</title>
+        <title>Smarte måltider</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -36,157 +65,425 @@ export default function Home() {
           </div>
         )}
         
-        <header className="py-6 flex justify-between items-center">
-        <Link href="#" legacyBehavior>
-  <a style={{
-    color: 'white',
-    fontSize: '1.125rem',
-    fontWeight: '500',
-    transition: 'color 0.15s ease-in-out'
-  }}>
-    Våre medlemskap
-  </a>
-</Link>
+        <header className="py-6 flex justify-between items-center relative z-50">
+          <div>
+            <a 
+              href="#medlemskap" 
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('medlemskap').scrollIntoView({ 
+                  behavior: 'smooth',
+                  block: 'start'
+                });
+              }}
+              style={{
+                color: 'white',
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                padding: '0.5rem 1rem',
+                borderRadius: '9999px',
+                fontSize: '1.125rem',
+                fontWeight: '500',
+                transition: 'all 0.2s ease-in-out',
+                cursor: 'pointer',
+                display: 'inline-block'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+              }}
+            >
+              Våre medlemskap
+            </a>
+          </div>
           <div className="space-x-8">
           {user ? (
-  <>
-    <span className="text-white text-lg">Hei, {user.email}</span>
-    <button
-      onClick={() => signOut()}
-      style={{
-        color: 'white',
-        fontSize: '1.125rem',
-        fontWeight: '500',
-        transition: 'color 0.15s ease-in-out'
-      }}
-    >
-      Logg ut
-    </button>
-  </>
-) : (
-  <>
-    <Link href="/login" legacyBehavior>
-      <a style={{
-        color: 'white',
-        backgroundColor: 'rgba(255, 255, 255, 0.2)',
-        padding: '0.5rem 1rem',
-        borderRadius: '9999px',
-        fontSize: '1.125rem',
-        fontWeight: '500',
-        transition: 'color 0.15s ease-in-out'
-      }}>
-        Logg inn
-      </a>
-    </Link>
-    <Link href="/register" legacyBehavior>
-      <a style={{
-        color: 'white',
-        fontSize: '1.125rem',
-        fontWeight: '500',
-        transition: 'color 0.15s ease-in-out'
-      }}>
-        Registrer deg
-      </a>
-    </Link>
-  </>
-)}
+            <>
+              <span className="text-white text-lg">Hei, {user.email}</span>
+              <button
+                onClick={() => signOut()}
+                style={{
+                  color: 'white',
+                  fontSize: '1.125rem',
+                  fontWeight: '500',
+                  transition: 'all 0.2s ease-in-out',
+                  cursor: 'pointer',
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  padding: '0.5rem 1rem',
+                  display: 'inline-block'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.color = 'white';
+                }}
+              >
+                Logg ut
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/login" legacyBehavior>
+                <a style={{
+                  color: 'white',
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                  padding: '0.5rem 1rem',
+                  borderRadius: '9999px',
+                  fontSize: '1.125rem',
+                  fontWeight: '500',
+                  transition: 'all 0.2s ease-in-out',
+                  cursor: 'pointer',
+                  display: 'inline-block'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                }}
+                >
+                  Logg inn
+                </a>
+              </Link>
+              <Link href="/register" legacyBehavior>
+                <a style={{
+                  color: 'white',
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                  padding: '0.5rem 1rem',
+                  borderRadius: '9999px',
+                  fontSize: '1.125rem',
+                  fontWeight: '500',
+                  transition: 'all 0.2s ease-in-out',
+                  cursor: 'pointer',
+                  display: 'inline-block'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                }}
+                >
+                  Registrer deg
+                </a>
+              </Link>
+            </>
+          )}
           </div>
         </header>
 
+        {/* Lys hvit stripe under navigasjonsknappene */}
+        <div className="w-full h-1 bg-white/20" style={{ 
+          boxShadow: '0 0 12px rgba(255, 255, 255, 0.3)',
+          marginLeft: '-100vw',
+          paddingLeft: '100vw',
+          marginRight: '-100vw',
+          paddingRight: '100vw'
+        }}></div>
+
         <main className="flex-grow flex flex-col items-center justify-center py-16 -mt-20">
-          <div className="max-w-4xl text-center mb-16">
-            <h1 className="text-5xl sm:text-6xl font-bold mb-6 text-white leading-tight">
-              AI Meal Prep – Din personlige kokk i lomma
+          <div className="text-center mb-24 mt-16">
+            <h1 className="text-5xl sm:text-6xl font-bold text-white mb-10 drop-shadow-lg">
+              Smarte måltider
             </h1>
-            <p className="text-xl sm:text-2xl text-white/90 mb-12">
-              {user 
-                ? 'Klar til å lage ditt neste måltid? La oss sette i gang!'
-                : 'Generer måltider basert på dine ingredienser, mål og smak. Start nå!'}
+            <p className="text-xl sm:text-2xl text-white font-medium drop-shadow-md max-w-3xl mx-auto">
+              Skreddersydde måltidsplaner generert av AI, basert på dine ingredienser og preferanser
             </p>
-            <button 
-  onClick={handleGenerateMeal}
-  style={{
-    backgroundColor: 'rgb(249, 115, 22)',
-    color: 'white',
-    fontWeight: '700',
-    padding: '1rem 2.5rem',
-    borderRadius: '9999px',
-    fontSize: '1.125rem',
-    transform: 'scale(1)',
-    transition: 'all 0.2s ease-in-out',
-    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
-  }}
-  onMouseOver={(e) => {
-    e.currentTarget.style.backgroundColor = 'rgb(234, 88, 12)';
-    e.currentTarget.style.transform = 'scale(1.05)';
-    e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)';
-  }}
-  onMouseOut={(e) => {
-    e.currentTarget.style.backgroundColor = 'rgb(249, 115, 22)';
-    e.currentTarget.style.transform = 'scale(1)';
-    e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
-  }}
->
-  {user ? 'La AI lage ditt perfekte måltid' : 'Logg inn for å starte'}
-</button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10 w-full max-w-6xl px-4 mb-24">
-            <div className="bg-white bg-opacity-20 backdrop-blur-sm p-8 rounded-2xl shadow-lg 
-              hover:bg-opacity-25 transition-all duration-300 flex flex-col items-center text-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10 w-full max-w-6xl px-4 mb-32">
+            <div className="bg-white bg-opacity-25 backdrop-blur-sm p-8 rounded-2xl shadow-lg 
+              hover:bg-opacity-30 transition-all duration-300 flex flex-col items-center text-center border border-white/20"
+              style={{ boxShadow: '0 0 20px rgba(255, 255, 255, 0.15)' }}>
               <span className="text-4xl mb-4">📸</span>
-              <p className="text-white text-lg leading-relaxed">
+              <p className="text-white text-lg leading-relaxed font-medium">
                 Skann ingredienser med bilde – vi kjenner igjen 5000+ matvarer!
               </p>
             </div>
-            <div className="bg-white bg-opacity-20 backdrop-blur-sm p-8 rounded-2xl shadow-lg 
-              hover:bg-opacity-25 transition-all duration-300 flex flex-col items-center text-center">
+            <div className="bg-white bg-opacity-25 backdrop-blur-sm p-8 rounded-2xl shadow-lg 
+              hover:bg-opacity-30 transition-all duration-300 flex flex-col items-center text-center border border-white/20"
+              style={{ boxShadow: '0 0 20px rgba(255, 255, 255, 0.15)' }}>
               <span className="text-4xl mb-4">🍴</span>
-              <p className="text-white text-lg leading-relaxed">
+              <p className="text-white text-lg leading-relaxed font-medium">
                 Personlige oppskrifter for vektmål, allergier og livsstil
               </p>
             </div>
-            <div className="bg-white bg-opacity-20 backdrop-blur-sm p-8 rounded-2xl shadow-lg 
-              hover:bg-opacity-25 transition-all duration-300 flex flex-col items-center text-center">
+            <div className="bg-white bg-opacity-25 backdrop-blur-sm p-8 rounded-2xl shadow-lg 
+              hover:bg-opacity-30 transition-all duration-300 flex flex-col items-center text-center border border-white/20"
+              style={{ boxShadow: '0 0 20px rgba(255, 255, 255, 0.15)' }}>
               <span className="text-4xl mb-4">🌟</span>
-              <p className="text-white text-lg leading-relaxed">
+              <p className="text-white text-lg leading-relaxed font-medium">
                 Få tilbakemelding fra AI basert på dine vurderinger
               </p>
             </div>
           </div>
 
           <div className="w-full max-w-6xl px-4">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-12">
-              Hvorfor AI Meal Prep er det smarte valget
+            <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-12 drop-shadow-lg">
+              Hvorfor Smarte måltider er det smarte valget
             </h2>
+            
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div className="bg-white/10 backdrop-blur-sm p-8 rounded-2xl hover:bg-white/15 transition-all duration-300">
-                <h3 className="text-xl font-semibold text-white mb-3">AI-Personlig Meal Prep</h3>
-                <p className="text-white/90 leading-relaxed">
+              <div className="bg-white/15 backdrop-blur-sm p-8 rounded-2xl hover:bg-white/20 transition-all duration-300 border border-white/20 shadow-lg"
+                style={{ boxShadow: '0 0 15px rgba(255, 255, 255, 0.1)' }}>
+                <h3 className="text-xl font-semibold text-white mb-3 drop-shadow-md">AI-Personlig Meal Prep</h3>
+                <p className="text-white leading-relaxed font-medium">
                   Få skreddersydde måltider basert på dine ingredienser, vektmål og smak, mens du sparer tid og unngår matsvinn.
                 </p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm p-8 rounded-2xl hover:bg-white/15 transition-all duration-300">
-                <h3 className="text-xl font-semibold text-white mb-3">Smart Handleliste + Zero Waste</h3>
-                <p className="text-white/90 leading-relaxed">
+              <div className="bg-white/15 backdrop-blur-sm p-8 rounded-2xl hover:bg-white/20 transition-all duration-300 border border-white/20 shadow-lg"
+                style={{ boxShadow: '0 0 15px rgba(255, 255, 255, 0.1)' }}>
+                <h3 className="text-xl font-semibold text-white mb-3 drop-shadow-md">Smart Handleliste + Zero Waste</h3>
+                <p className="text-white leading-relaxed font-medium">
                   Appen lager automatiske handlelister og hjelper deg med å bruke opp alt du har, slik at du sparer penger og reduserer sløsing.
                 </p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm p-8 rounded-2xl hover:bg-white/15 transition-all duration-300">
-                <h3 className="text-xl font-semibold text-white mb-3">Næringsinnsikt i Sanntid</h3>
-                <p className="text-white/90 leading-relaxed">
+              <div className="bg-white/15 backdrop-blur-sm p-8 rounded-2xl hover:bg-white/20 transition-all duration-300 border border-white/20 shadow-lg"
+                style={{ boxShadow: '0 0 15px rgba(255, 255, 255, 0.1)' }}>
+                <h3 className="text-xl font-semibold text-white mb-3 drop-shadow-md">Næringsinnsikt i Sanntid</h3>
+                <p className="text-white leading-relaxed font-medium">
                   Få detaljert oversikt over kalorier, makronæringsstoffer og andre næringsverdier for hvert eneste måltid som genereres.
                 </p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm p-8 rounded-2xl hover:bg-white/15 transition-all duration-300">
-                <h3 className="text-xl font-semibold text-white mb-3">Vektmål På Autopilot</h3>
-                <p className="text-white/90 leading-relaxed">
+              <div className="bg-white/15 backdrop-blur-sm p-8 rounded-2xl hover:bg-white/20 transition-all duration-300 border border-white/20 shadow-lg"
+                style={{ boxShadow: '0 0 15px rgba(255, 255, 255, 0.1)' }}>
+                <h3 className="text-xl font-semibold text-white mb-3 drop-shadow-md">Vektmål På Autopilot</h3>
+                <p className="text-white leading-relaxed font-medium">
                   Uansett om du vil gå opp, ned eller beholde vekt, tilpasser appen måltidene dine for å holde deg på sporet mot dine helsemål.
                 </p>
               </div>
             </div>
           </div>
+          
+          {/* Membership Plans */}
+          <div id="medlemskap" className="w-full max-w-6xl px-4 mt-24 mb-24">
+            <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-16 drop-shadow-lg">
+              Våre medlemskap
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* Basic Plan */}
+              <div 
+                className="bg-gradient-to-b from-purple-950/80 to-purple-900/60 backdrop-blur-sm p-8 rounded-2xl border border-purple-600/30 relative flex flex-col h-full transform transition-all duration-500 hover:scale-105 hover:-translate-y-2"
+                style={{
+                  boxShadow: '0 0 20px rgba(147, 51, 234, 0.3)',
+                  animation: 'pulse 3s infinite alternate'
+                }}
+              >
+                <h3 className="text-purple-300 text-2xl font-bold mb-2">Basis</h3>
+                <div className="flex items-end mb-6">
+                  <span className="text-purple-300 text-5xl font-bold">99</span>
+                  <span className="text-purple-300 text-xl ml-1 mb-1">kr/måned</span>
+                </div>
+                <p className="text-white/80 mb-4">
+                  <span className="font-semibold">Måltidsgenerering:</span> 50 AI-måltidsplaner/mnd.
+                </p>
+                <button 
+                  className="bg-purple-700 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 mb-6 transform hover:scale-105"
+                  style={{ boxShadow: '0 0 10px rgba(147, 51, 234, 0.5)' }}
+                >
+                  Velg Basis
+                </button>
+                <h4 className="text-purple-300 text-lg font-semibold mb-3">Funksjoner:</h4>
+                <ul className="space-y-3 text-white/90 flex-grow">
+                  <li className="flex items-start">
+                    <span className="text-purple-300 mr-2">✦</span>
+                    <span>Sett vektmål (opp/ned/vedlikehold) for tilpassede kalorimål</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-purple-300 mr-2">✦</span>
+                    <span>Enkle oppskrifter med ingrediensliste, matvarebilder og basis ernæringsinfo</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-purple-300 mr-2">✦</span>
+                    <span>Personlige matvarepreferanser («Jeg hater løk!»)</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-purple-300 mr-2">✦</span>
+                    <span>Opptil 2 brukere på samme konto</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-purple-300 mr-2">✦</span>
+                    <span>Enkle ernæringstips (f.eks. «Slik øker du proteininntaket»)</span>
+                  </li>
+                </ul>
+              </div>
+              
+              {/* Premium Plan */}
+              <div 
+                className="bg-gradient-to-b from-orange-950/80 to-orange-800/60 backdrop-blur-sm p-8 rounded-2xl border border-orange-500/40 relative flex flex-col h-full transform transition-all duration-500 hover:scale-105 hover:-translate-y-2 z-10"
+                style={{
+                  boxShadow: '0 0 30px rgba(249, 115, 22, 0.4)',
+                  animation: 'pulse 3s infinite alternate'
+                }}
+              >
+                <div 
+                  className="absolute -top-6 -right-6 bg-gradient-to-br from-pink-500 to-blue-500 rounded-full p-3 text-xs font-bold text-center animate-spin-slow" 
+                  style={{ 
+                    width: '80px', 
+                    height: '80px', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    flexDirection: 'column',
+                    boxShadow: '0 0 15px rgba(236, 72, 153, 0.6)'
+                  }}
+                >
+                  <div>Mest</div>
+                  <div>Populær</div>
+                </div>
+                <h3 className="text-orange-300 text-2xl font-bold mb-2">Pro Chef</h3>
+                <div className="flex items-end mb-6">
+                  <span className="text-orange-300 text-5xl font-bold">229</span>
+                  <span className="text-orange-300 text-xl ml-1 mb-1">kr/måned</span>
+                </div>
+                <p className="text-white/80 mb-4">
+                  <span className="font-semibold">Måltidsgenerering:</span> 150 AI-måltidsplaner/mnd.
+                </p>
+                <button 
+                  className="bg-orange-600 hover:bg-orange-500 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 mb-6 transform hover:scale-105"
+                  style={{ boxShadow: '0 0 15px rgba(249, 115, 22, 0.6)' }}
+                >
+                  Velg Pro Chef
+                </button>
+                <h4 className="text-orange-300 text-lg font-semibold mb-3">Funksjoner:</h4>
+                <ul className="space-y-3 text-white/90 flex-grow">
+                  <li className="flex items-start">
+                    <span className="text-orange-300 mr-2">✦</span>
+                    <span>Alt i Basis, pluss:</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-orange-300 mr-2">✦</span>
+                    <span>Smart handleliste sortert etter butikkavdeling + automatisk kalorijustering</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-orange-300 mr-2">✦</span>
+                    <span>Vektprogressjonssporing med graf og ukentlige oppsummeringer</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-orange-300 mr-2">✦</span>
+                    <span>AI-måltidvurdering («Gjør denne oppskriften sunnere eller kaloririkere»)</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-orange-300 mr-2">✦</span>
+                    <span>Måltidplanlegger med balansert ernæring for ditt mål</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-orange-300 mr-2">✦</span>
+                    <span>Opptil 5 brukere + delt familiekalender</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-orange-300 mr-2">✦</span>
+                    <span>Lagre opptil 200 oppskrifter</span>
+                  </li>
+                </ul>
+              </div>
+              
+              {/* Family Plan */}
+              <div 
+                className="bg-gradient-to-b from-blue-950/80 to-blue-900/60 backdrop-blur-sm p-8 rounded-2xl border border-blue-600/30 relative flex flex-col h-full transform transition-all duration-500 hover:scale-105 hover:-translate-y-2"
+                style={{
+                  boxShadow: '0 0 20px rgba(37, 99, 235, 0.3)',
+                  animation: 'pulse 3s infinite alternate'
+                }}
+              >
+                <h3 className="text-blue-300 text-2xl font-bold mb-2">Ultimate Gourmet</h3>
+                <div className="flex items-end mb-6">
+                  <span className="text-blue-300 text-5xl font-bold">399</span>
+                  <span className="text-blue-300 text-xl ml-1 mb-1">kr/måned</span>
+                </div>
+                <p className="text-white/80 mb-4">
+                  <span className="font-semibold">Måltidsgenerering:</span> Ubegrenset
+                </p>
+                <button 
+                  className="bg-blue-700 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 mb-6 transform hover:scale-105"
+                  style={{ boxShadow: '0 0 10px rgba(37, 99, 235, 0.5)' }}
+                >
+                  Velg Ultimate
+                </button>
+                <h4 className="text-blue-300 text-lg font-semibold mb-3">Funksjoner:</h4>
+                <ul className="space-y-3 text-white/90 flex-grow">
+                  <li className="flex items-start">
+                    <span className="text-blue-300 mr-2">✦</span>
+                    <span>Alt i Pro Chef, pluss:</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-blue-300 mr-2">✦</span>
+                    <span>«Restemat-Magi»: Lag oppskrifter basert på rester i kjøleskapet</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-blue-300 mr-2">✦</span>
+                    <span>1:1 AI-ernæringscoach som gir ukentlige mål og motivasjonstips</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-blue-300 mr-2">✦</span>
+                    <span>Automatisk justering av makronæring hver 4. uke for å unngå platåer</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-blue-300 mr-2">✦</span>
+                    <span>Opptil 10 brukere + grupper med sanntidsoppdateringer</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-blue-300 mr-2">✦</span>
+                    <span>Integrasjon med treningsapper (MyFitnessPal, Strava) for helhetlig oversikt</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          {/* FAQ Section */}
+          <div className="w-full max-w-6xl px-4 mt-24 mb-24">
+            <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-16 drop-shadow-lg">
+              Ofte stilte spørsmål
+            </h2>
+            <div className="space-y-8">
+              <div className="bg-amber-900/40 backdrop-blur-sm p-8 rounded-2xl border border-amber-800/30 shadow-lg"
+                style={{ boxShadow: '0 0 15px rgba(146, 64, 14, 0.2)' }}>
+                <h3 className="text-xl font-semibold text-white mb-4 drop-shadow-md">Hvordan fungerer Smarte måltider?</h3>
+                <p className="text-white leading-relaxed font-medium">
+                  Smarte måltider bruker avansert kunstig intelligens for å analysere dine matvarepreferanser, allergier, og ernæringsmål. Basert på denne informasjonen genererer appen personlige måltidsplaner som passer perfekt til dine behov. Du kan også skanne ingredienser du allerede har hjemme, og appen vil foreslå oppskrifter som bruker disse ingrediensene.
+                </p>
+              </div>
+              <div className="bg-amber-900/40 backdrop-blur-sm p-8 rounded-2xl border border-amber-800/30 shadow-lg"
+                style={{ boxShadow: '0 0 15px rgba(146, 64, 14, 0.2)' }}>
+                <h3 className="text-xl font-semibold text-white mb-4 drop-shadow-md">Kan jeg tilpasse måltidsplanene etter spesifikke dietter?</h3>
+                <p className="text-white leading-relaxed font-medium">
+                  Absolutt! Smarte måltider støtter en rekke dietter og kostholdspreferanser, inkludert vegetarisk, vegansk, ketogen, lavkarbo, glutenfri, og mange flere. Du kan også angi spesifikke allergier eller matvarer du vil unngå, og appen vil automatisk ekskludere disse fra dine måltidsforslag.
+                </p>
+              </div>
+              <div className="bg-amber-900/40 backdrop-blur-sm p-8 rounded-2xl border border-amber-800/30 shadow-lg"
+                style={{ boxShadow: '0 0 15px rgba(146, 64, 14, 0.2)' }}>
+                <h3 className="text-xl font-semibold text-white mb-4 drop-shadow-md">Hvor nøyaktig er næringsberegningen?</h3>
+                <p className="text-white leading-relaxed font-medium">
+                  Vår næringsberegning er basert på en omfattende database med over 10,000 matvarer og deres næringsinnhold. Vi oppdaterer jevnlig denne databasen for å sikre nøyaktighet. Mens vi streber etter høy presisjon, anbefaler vi å konsultere med en ernæringsfysiolog for spesifikke medisinske behov.
+                </p>
+              </div>
+              <div className="bg-amber-900/40 backdrop-blur-sm p-8 rounded-2xl border border-amber-800/30 shadow-lg"
+                style={{ boxShadow: '0 0 15px rgba(146, 64, 14, 0.2)' }}>
+                <h3 className="text-xl font-semibold text-white mb-4 drop-shadow-md">Kan jeg bruke appen for hele familien?</h3>
+                <p className="text-white leading-relaxed font-medium">
+                  Ja, våre Familie- og Ultimate Gourmet-abonnementer er spesielt designet for familier. Du kan opprette profiler for hvert familiemedlem med deres individuelle preferanser og ernæringsbehov, og appen vil generere måltidsplaner som passer for hele familien.
+                </p>
+              </div>
+              <div className="bg-amber-900/40 backdrop-blur-sm p-8 rounded-2xl border border-amber-800/30 shadow-lg"
+                style={{ boxShadow: '0 0 15px rgba(146, 64, 14, 0.2)' }}>
+                <h3 className="text-xl font-semibold text-white mb-4 drop-shadow-md">Hvordan fornyer jeg abonnementet mitt?</h3>
+                <p className="text-white leading-relaxed font-medium">
+                  Alle abonnementer fornyes automatisk ved slutten av abonnementsperioden. Du kan når som helst avbryte fornyelsen gjennom din kontoprofil. Hvis du avbryter, vil du fortsatt ha tilgang til tjenesten ut den gjeldende abonnementsperioden.
+                </p>
+              </div>
+            </div>
+          </div>
         </main>
+        
+        {/* Footer */}
+        <footer className="py-8 text-center text-white/80">
+          <p>&copy; {new Date().getFullYear()} Smarte måltider. Alle rettigheter reservert.</p>
+        </footer>
       </div>
     </div>
   );
