@@ -71,11 +71,24 @@ export const AuthProvider = ({ children }) => {
 
   const signOut = async () => {
     try {
+      // Sjekk om brukeren er logget inn før vi prøver å logge ut
+      if (!user) {
+        setUser(null);
+        return;
+      }
+      
       const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      
+      // Uansett om det er en feil eller ikke, sett brukeren til null
       setUser(null);
+      
+      if (error && error.message !== 'Auth session missing!') {
+        console.error('Utloggingsfeil:', error.message);
+      }
     } catch (error) {
-      throw error;
+      console.error('Utloggingsfeil:', error.message);
+      // Sett brukeren til null uansett for å sikre lokal utlogging
+      setUser(null);
     }
   };
 

@@ -267,6 +267,83 @@ export default function Home() {
         '--duration': '18s'
       }}></div>
       
+      {/* Additional animated waves */}
+      <div className="wave" style={{ 
+        top: '45%', 
+        left: '20%', 
+        '--duration': '14s'
+      }}></div>
+      <div className="wave" style={{ 
+        top: '75%', 
+        left: '60%', 
+        '--duration': '16s'
+      }}></div>
+      <div className="wave" style={{ 
+        top: '10%', 
+        left: '40%', 
+        '--duration': '20s'
+      }}></div>
+      
+      {/* Floating stars */}
+      <div className="floating-star" style={{ 
+        top: '15%', 
+        right: '25%', 
+        '--size': '20px',
+        '--duration': '13s',
+        '--float-y': '40px',
+        '--float-x': '-30px',
+        '--rotate': '180deg'
+      }}>✨</div>
+      <div className="floating-star" style={{ 
+        bottom: '25%', 
+        left: '35%', 
+        '--size': '24px',
+        '--duration': '16s',
+        '--float-y': '-45px',
+        '--float-x': '35px',
+        '--rotate': '220deg'
+      }}>✨</div>
+      <div className="floating-star" style={{ 
+        top: '40%', 
+        left: '15%', 
+        '--size': '22px',
+        '--duration': '18s',
+        '--float-y': '50px',
+        '--float-x': '-40px',
+        '--rotate': '160deg'
+      }}>✨</div>
+      <div className="floating-star" style={{ 
+        top: '60%', 
+        right: '15%', 
+        '--size': '26px',
+        '--duration': '15s',
+        '--float-y': '-35px',
+        '--float-x': '45px',
+        '--rotate': '200deg'
+      }}>✨</div>
+      
+      {/* Sparkle effects */}
+      <div className="sparkle" style={{ 
+        top: '20%', 
+        right: '40%', 
+        '--duration': '5s'
+      }}></div>
+      <div className="sparkle" style={{ 
+        bottom: '30%', 
+        left: '25%', 
+        '--duration': '7s'
+      }}></div>
+      <div className="sparkle" style={{ 
+        top: '70%', 
+        right: '30%', 
+        '--duration': '6s'
+      }}></div>
+      <div className="sparkle" style={{ 
+        top: '35%', 
+        left: '50%', 
+        '--duration': '8s'
+      }}></div>
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen flex flex-col relative z-10">
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mt-4">
@@ -286,21 +363,32 @@ export default function Home() {
                 });
               }}
               style={{
-                color: 'white',
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                color: '#ff8a00',
+                background: 'white',
                 padding: '0.5rem 1rem',
                 borderRadius: '9999px',
                 fontSize: '1.125rem',
                 fontWeight: '500',
-                transition: 'all 0.2s ease-in-out',
+                transition: 'all 0.3s ease-in-out',
                 cursor: 'pointer',
-                display: 'inline-block'
+                display: 'inline-block',
+                border: '2px solid #ff8a00',
+                boxShadow: '0 10px 25px -5px rgba(255, 255, 255, 0.5), 0 5px 15px -10px rgba(255, 138, 0, 0.4)',
+                position: 'relative',
+                overflow: 'hidden',
+                zIndex: 1
               }}
               onMouseOver={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+                e.currentTarget.style.transform = 'translateY(-5px)';
+                e.currentTarget.style.boxShadow = '0 15px 30px -5px rgba(255, 255, 255, 0.6), 0 10px 20px -10px rgba(255, 138, 0, 0.5)';
+                e.currentTarget.style.color = '#e53e3e';
+                e.currentTarget.style.borderColor = '#e53e3e';
               }}
               onMouseOut={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(255, 255, 255, 0.5), 0 5px 15px -10px rgba(255, 138, 0, 0.4)';
+                e.currentTarget.style.color = '#ff8a00';
+                e.currentTarget.style.borderColor = '#ff8a00';
               }}
             >
               Våre medlemskap
@@ -313,21 +401,32 @@ export default function Home() {
               <button
                 onClick={() => signOut()}
                 style={{
-                  color: 'white',
+                  color: '#ff8a00',
+                  background: 'white',
+                  padding: '0.5rem 1rem',
+                  borderRadius: '9999px',
                   fontSize: '1.125rem',
                   fontWeight: '500',
-                  transition: 'all 0.2s ease-in-out',
+                  transition: 'all 0.3s ease-in-out',
                   cursor: 'pointer',
-                  backgroundColor: 'transparent',
-                  border: 'none',
-                  padding: '0.5rem 1rem',
-                  display: 'inline-block'
+                  display: 'inline-block',
+                  border: '2px solid #ff8a00',
+                  boxShadow: '0 10px 25px -5px rgba(255, 255, 255, 0.5), 0 5px 15px -10px rgba(255, 138, 0, 0.4)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  zIndex: 1
                 }}
                 onMouseOver={(e) => {
-                  e.currentTarget.style.color = 'rgba(255, 255, 255, 0.8)';
+                  e.currentTarget.style.transform = 'translateY(-5px)';
+                  e.currentTarget.style.boxShadow = '0 15px 30px -5px rgba(255, 255, 255, 0.6), 0 10px 20px -10px rgba(255, 138, 0, 0.5)';
+                  e.currentTarget.style.color = '#e53e3e';
+                  e.currentTarget.style.borderColor = '#e53e3e';
                 }}
                 onMouseOut={(e) => {
-                  e.currentTarget.style.color = 'white';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(255, 255, 255, 0.5), 0 5px 15px -10px rgba(255, 138, 0, 0.4)';
+                  e.currentTarget.style.color = '#ff8a00';
+                  e.currentTarget.style.borderColor = '#ff8a00';
                 }}
               >
                 Logg ut
@@ -337,21 +436,32 @@ export default function Home() {
             <>
               <Link href="/login" legacyBehavior>
                 <a style={{
-                  color: 'white',
-                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                  color: '#ff8a00',
+                  background: 'white',
                   padding: '0.5rem 1rem',
                   borderRadius: '9999px',
                   fontSize: '1.125rem',
                   fontWeight: '500',
-                  transition: 'all 0.2s ease-in-out',
+                  transition: 'all 0.3s ease-in-out',
                   cursor: 'pointer',
-                  display: 'inline-block'
+                  display: 'inline-block',
+                  border: '2px solid #ff8a00',
+                  boxShadow: '0 10px 25px -5px rgba(255, 255, 255, 0.5), 0 5px 15px -10px rgba(255, 138, 0, 0.4)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  zIndex: 1
                 }}
                 onMouseOver={(e) => {
-                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+                  e.currentTarget.style.transform = 'translateY(-5px)';
+                  e.currentTarget.style.boxShadow = '0 15px 30px -5px rgba(255, 255, 255, 0.6), 0 10px 20px -10px rgba(255, 138, 0, 0.5)';
+                  e.currentTarget.style.color = '#e53e3e';
+                  e.currentTarget.style.borderColor = '#e53e3e';
                 }}
                 onMouseOut={(e) => {
-                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(255, 255, 255, 0.5), 0 5px 15px -10px rgba(255, 138, 0, 0.4)';
+                  e.currentTarget.style.color = '#ff8a00';
+                  e.currentTarget.style.borderColor = '#ff8a00';
                 }}
                 >
                   Logg inn
@@ -359,21 +469,32 @@ export default function Home() {
               </Link>
               <Link href="/register" legacyBehavior>
                 <a style={{
-                  color: 'white',
-                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                  color: '#ff8a00',
+                  background: 'white',
                   padding: '0.5rem 1rem',
                   borderRadius: '9999px',
                   fontSize: '1.125rem',
                   fontWeight: '500',
-                  transition: 'all 0.2s ease-in-out',
+                  transition: 'all 0.3s ease-in-out',
                   cursor: 'pointer',
-                  display: 'inline-block'
+                  display: 'inline-block',
+                  border: '2px solid #ff8a00',
+                  boxShadow: '0 10px 25px -5px rgba(255, 255, 255, 0.5), 0 5px 15px -10px rgba(255, 138, 0, 0.4)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  zIndex: 1
                 }}
                 onMouseOver={(e) => {
-                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+                  e.currentTarget.style.transform = 'translateY(-5px)';
+                  e.currentTarget.style.boxShadow = '0 15px 30px -5px rgba(255, 255, 255, 0.6), 0 10px 20px -10px rgba(255, 138, 0, 0.5)';
+                  e.currentTarget.style.color = '#e53e3e';
+                  e.currentTarget.style.borderColor = '#e53e3e';
                 }}
                 onMouseOut={(e) => {
-                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(255, 255, 255, 0.5), 0 5px 15px -10px rgba(255, 138, 0, 0.4)';
+                  e.currentTarget.style.color = '#ff8a00';
+                  e.currentTarget.style.borderColor = '#ff8a00';
                 }}
                 >
                   Registrer deg
@@ -425,7 +546,7 @@ export default function Home() {
               style={{ boxShadow: '0 0 20px rgba(255, 255, 255, 0.15)' }}>
               <span className="text-4xl mb-4">🌟</span>
               <p className="text-white text-lg leading-relaxed font-medium">
-                Få tilbakemelding fra AI basert på dine vurderinger
+                Fra ingredienser til handleliste og trinn-for-trinn instruksjoner – alt du trenger i én app
               </p>
             </div>
           </div>
@@ -470,7 +591,7 @@ export default function Home() {
             </div>
 
             <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-12 drop-shadow-lg">
-              Hvorfor Smarte måltider er det smarte valget
+              Skreddersydde måltidsplaner som forenkler hverdagen din
             </h2>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

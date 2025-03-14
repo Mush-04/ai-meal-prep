@@ -227,3 +227,40 @@
     background-position: 0% 50%;
   }
 }
+
+/* Floating stars animation */
+.floating-star {
+  position: absolute;
+  font-size: var(--size, 24px);
+  opacity: 0.7;
+  z-index: -1;
+  animation-name: float-rotate;
+  animation-duration: var(--duration);
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+/* Sparkle animation */
+.sparkle {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: -1;
+  animation: sparkle-animation var(--duration) ease-in-out infinite;
+  border-radius: 50%;
+  box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.6);
+}
+
+@keyframes sparkle-animation {
+  0%, 100% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

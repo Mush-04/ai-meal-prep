@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { useAuth } from '../../contexts/AuthContext';
 
 export default function AuthForm({ mode }) {
@@ -18,10 +19,17 @@ export default function AuthForm({ mode }) {
     try {
       if (mode === 'login') {
         await signIn(email, password);
+        
+        // Sjekk om brukeren er admin (har e-posten munashe.toga@gmail.com)
+        if (email.toLowerCase() === 'munashe.toga@gmail.com') {
+          router.push('/admin');
+        } else {
+          router.push('/');
+        }
       } else {
         await signUp(email, password);
+        router.push('/');
       }
-      router.push('/');
     } catch (err) {
       setError(
         err.message === 'Invalid login credentials'
@@ -120,6 +128,19 @@ export default function AuthForm({ mode }) {
   )}
 </button>
         </div>
+        
+        {mode === 'login' && (
+          <div className="mt-6 text-center">
+            <p className="text-white/90">
+              Har du ikke konto?{' '}
+              <Link href="/register" legacyBehavior>
+                <a className="text-white underline hover:text-orange-200 font-medium">
+                  Registrer deg her
+                </a>
+              </Link>
+            </p>
+          </div>
+        )}
       </form>
     </div>
   );
