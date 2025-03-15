@@ -177,7 +177,7 @@ export default function Step3HealthGoals({ userData, updateUserData, goToNextSte
             id="currentWeight"
             type="number"
             placeholder="75"
-            value={userData.currentWeight}
+            value={userData.currentWeight || ''}
             onChange={(e) => updateUserData({ currentWeight: e.target.value })}
             whileFocus={{ scale: 1.02, boxShadow: "0px 0px 8px rgba(249, 115, 22, 0.5)" }}
             transition={{ type: "spring", stiffness: 500, damping: 17 }}
@@ -203,7 +203,7 @@ export default function Step3HealthGoals({ userData, updateUserData, goToNextSte
             id="targetWeight"
             type="number"
             placeholder="70"
-            value={userData.targetWeight}
+            value={userData.targetWeight || ''}
             onChange={(e) => updateUserData({ targetWeight: e.target.value })}
             whileFocus={{ scale: 1.02, boxShadow: "0px 0px 8px rgba(249, 115, 22, 0.5)" }}
             transition={{ type: "spring", stiffness: 500, damping: 17 }}

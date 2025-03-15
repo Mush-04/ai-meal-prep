@@ -24,11 +24,12 @@ export default function AuthForm({ mode }) {
         if (email.toLowerCase() === 'munashe.toga@gmail.com') {
           router.push('/admin');
         } else {
-          router.push('/');
+          router.push('/dashboard');
         }
       } else {
         await signUp(email, password);
-        router.push('/');
+        // Standardiserer omdirigeringen til dashboard uten tab-parameter
+        router.push('/dashboard');
       }
     } catch (err) {
       setError(
@@ -36,6 +37,8 @@ export default function AuthForm({ mode }) {
           ? 'Feil e-post eller passord'
           : err.message === 'User already registered'
           ? 'E-posten er allerede registrert'
+          : err.code === 'email_address_invalid'
+          ? 'E-postadressen er ikke gyldig'
           : 'Det oppstod en feil. Vennligst prøv igjen.'
       );
     } finally {

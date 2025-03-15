@@ -1,0 +1,347 @@
+import { useState, useEffect } from 'react';
+import Head from 'next/head';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '../lib/supabase';
+import LoadingScreen from '../components/common/LoadingScreen';
+
+export default function Profil() {
+  const { user, loading, signOut } = useAuth();
+  const router = useRouter();
+  const [profileData, setProfileData] = useState(null);
+  const [profileLoading, setProfileLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Redirect to login if not logged in
+    if (!loading && !user) {
+      router.push('/login');
+      return;
+    }
+
+    // Fetch profile data if user is logged in
+    if (user) {
+      fetchProfileData();
+    }
+  }, [user, loading]);
+
+  useEffect(() => {
+    const handleRouteChange = (url) => {
+      if (!url.includes('/profil') && !url.includes('/dashboard')) {
+        signOut();
+      }
+    };
+
+    router.events.on('routeChangeStart', handleRouteChange);
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange);
+    };
+  }, [router, signOut]);
+
+  const fetchProfileData = async () => {
+    try {
+      setProfileLoading(true);
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (error) throw error;
+      setProfileData(data);
+    } catch (err) {
+      console.error('Feil ved henting av profildata:', err);
+      setError('Kunne ikke hente profildata. Vennligst prøv igjen senere.');
+    } finally {
+      setProfileLoading(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push('/');
+  };
+
+  if (loading || profileLoading) {
+    return <LoadingScreen />;
+  }
+
+  // Funksjon for å vise medlemskapsnivå på norsk
+  const getMembershipName = (tier) => {
+    switch (tier) {
+      case 'basis':
+        return 'Basis';
+      case 'premium':
+        return 'Premium';
+      case 'familie':
+        return 'Familie';
+      default:
+        return tier;
+    }
+  };
+
+  // Funksjon for å vise aktivitetsnivå på norsk
+  const getActivityLevelName = (level) => {
+    switch (level) {
+      case 'lav':
+        return 'Lav aktivitet';
+      case 'moderat':
+        return 'Moderat aktivitet';
+      case 'høy':
+        return 'Høy aktivitet';
+      case 'veldig høy':
+        return 'Veldig høy aktivitet';
+      default:
+        return level;
+    }
+  };
+
+  return (
+    <div className="min-h-screen animated-bg">
+      <Head>
+        <title>Min Profil - Smarte Måltider</title>
+        <meta name="description" content="Din personlige profil hos Smarte Måltider" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
+      {/* Animated background elements */}
+      {/* Floating circles */}
+      <div className="floating-circle" style={{ 
+        width: '400px', 
+        height: '400px', 
+        top: '10%', 
+        left: '5%', 
+        '--duration': '20s',
+        '--float-y': '60px',
+        '--float-x': '40px',
+        '--blur': '5px',
+        '--scale': '1.2'
+      }}></div>
+      <div className="floating-circle" style={{ 
+        width: '350px', 
+        height: '350px', 
+        top: '70%', 
+        right: '2%', 
+        '--duration': '18s',
+        '--float-y': '-50px',
+        '--float-x': '-40px',
+        '--blur': '6px',
+        '--scale': '1.15'
+      }}></div>
+      
+      {/* Food icons */}
+      <div className="food-icon" style={{ 
+        top: '15%', 
+        right: '25%', 
+        '--size': '60px',
+        '--duration': '15s',
+        '--float-y': '70px',
+        '--float-x': '50px',
+        '--rotate': '180deg'
+      }}>🥗</div>
+      <div className="food-icon" style={{ 
+        bottom: '20%', 
+        left: '30%', 
+        '--size': '65px',
+        '--duration': '20s',
+        '--float-y': '50px',
+        '--float-x': '60px',
+        '--rotate': '200deg'
+      }}>🥑</div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-screen flex flex-col">
+        <header className="py-6 relative z-50 flex justify-between items-center">
+          <Link href="/dashboard" legacyBehavior>
+            <a style={{
+              color: '#ff8a00',
+              background: 'white',
+              padding: '0.5rem 1rem',
+              borderRadius: '9999px',
+              fontSize: '1.125rem',
+              fontWeight: '500',
+              transition: 'all 0.3s ease-in-out',
+              cursor: 'pointer',
+              display: 'inline-block',
+              border: '2px solid #ff8a00',
+              boxShadow: '0 10px 25px -5px rgba(255, 255, 255, 0.5), 0 5px 15px -10px rgba(255, 138, 0, 0.4)',
+              position: 'relative',
+              overflow: 'hidden',
+              zIndex: 1
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.transform = 'translateY(-5px)';
+              e.currentTarget.style.boxShadow = '0 15px 30px -5px rgba(255, 255, 255, 0.6), 0 10px 20px -10px rgba(255, 138, 0, 0.5)';
+              e.currentTarget.style.color = '#e53e3e';
+              e.currentTarget.style.borderColor = '#e53e3e';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(255, 255, 255, 0.5), 0 5px 15px -10px rgba(255, 138, 0, 0.4)';
+              e.currentTarget.style.color = '#ff8a00';
+              e.currentTarget.style.borderColor = '#ff8a00';
+            }}
+            >
+              Min side
+            </a>
+          </Link>
+          
+          <button
+            onClick={handleSignOut}
+            className="text-white bg-red-500 hover:bg-red-600 px-4 py-2 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg"
+          >
+            Logg ut
+          </button>
+        </header>
+
+        {/* Lys hvit stripe under navigasjonsknappene */}
+        <div className="w-full h-1 bg-white/20" style={{ 
+          boxShadow: '0 0 12px rgba(255, 255, 255, 0.3)',
+          marginLeft: '-100vw',
+          paddingLeft: '100vw',
+          marginRight: '-100vw',
+          paddingRight: '100vw'
+        }}></div>
+
+        <main className="flex-grow flex flex-col items-center mt-8">
+          {error ? (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 shadow-lg">
+              {error}
+            </div>
+          ) : profileData ? (
+            <div className="w-full max-w-4xl">
+              <div className="text-center mb-8">
+                <h1 className="text-4xl font-bold text-white mb-2">Velkommen, {profileData.first_name}!</h1>
+                <p className="text-white/90">Her er din personlige profilside hos Smarte Måltider</p>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-md rounded-xl p-8 shadow-lg border border-white/20 mb-8">
+                <h2 className="text-2xl font-bold text-white mb-6 border-b border-white/20 pb-2">Personlig informasjon</h2>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <h3 className="text-xl font-semibold text-white/90 mb-4">Kontaktinformasjon</h3>
+                    <div className="space-y-3">
+                      <div>
+                        <p className="text-white/70">Navn:</p>
+                        <p className="text-white font-medium">{profileData.first_name} {profileData.last_name}</p>
+                      </div>
+                      <div>
+                        <p className="text-white/70">E-post:</p>
+                        <p className="text-white font-medium">{user.email}</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-xl font-semibold text-white/90 mb-4">Medlemskap</h3>
+                    <div className="space-y-3">
+                      <div>
+                        <p className="text-white/70">Medlemskapsnivå:</p>
+                        <p className="text-white font-medium">{getMembershipName(profileData.membership_tier)}</p>
+                      </div>
+                      <div>
+                        <p className="text-white/70">Status:</p>
+                        <p className="text-green-400 font-medium">Aktiv</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-md rounded-xl p-8 shadow-lg border border-white/20 mb-8">
+                <h2 className="text-2xl font-bold text-white mb-6 border-b border-white/20 pb-2">Helseinformasjon</h2>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <h3 className="text-xl font-semibold text-white/90 mb-4">Fysiske mål</h3>
+                    <div className="space-y-3">
+                      {profileData.height && (
+                        <div>
+                          <p className="text-white/70">Høyde:</p>
+                          <p className="text-white font-medium">{profileData.height} cm</p>
+                        </div>
+                      )}
+                      {profileData.weight && (
+                        <div>
+                          <p className="text-white/70">Vekt:</p>
+                          <p className="text-white font-medium">{profileData.weight} kg</p>
+                        </div>
+                      )}
+                      <div>
+                        <p className="text-white/70">Aktivitetsnivå:</p>
+                        <p className="text-white font-medium">{getActivityLevelName(profileData.activity_level)}</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-xl font-semibold text-white/90 mb-4">Helsemål</h3>
+                    {profileData.health_goals && profileData.health_goals.length > 0 ? (
+                      <ul className="list-disc list-inside text-white space-y-1">
+                        {profileData.health_goals.map((goal, index) => (
+                          <li key={index}>{goal}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-white/70">Ingen helsemål angitt</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-md rounded-xl p-8 shadow-lg border border-white/20">
+                <h2 className="text-2xl font-bold text-white mb-6 border-b border-white/20 pb-2">Kostpreferanser</h2>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <h3 className="text-xl font-semibold text-white/90 mb-4">Diettrestriksjoner</h3>
+                    {profileData.dietary_restrictions && profileData.dietary_restrictions.length > 0 ? (
+                      <ul className="list-disc list-inside text-white space-y-1">
+                        {profileData.dietary_restrictions.map((restriction, index) => (
+                          <li key={index}>{restriction}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-white/70">Ingen diettrestriksjoner angitt</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-xl font-semibold text-white/90 mb-4">Allergier</h3>
+                    {profileData.allergies && profileData.allergies.length > 0 ? (
+                      <ul className="list-disc list-inside text-white space-y-1">
+                        {profileData.allergies.map((allergy, index) => (
+                          <li key={index}>{allergy}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-white/70">Ingen allergier angitt</p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-xl font-semibold text-white/90 mb-4">Ingredienser jeg ikke liker</h3>
+                    {profileData.disliked_ingredients && profileData.disliked_ingredients.length > 0 ? (
+                      <ul className="list-disc list-inside text-white space-y-1">
+                        {profileData.disliked_ingredients.map((ingredient, index) => (
+                          <li key={index}>{ingredient}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-white/70">Ingen ulikte ingredienser angitt</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center">
+              <p className="text-white text-xl">Ingen profildata funnet. Vennligst oppdater profilen din.</p>
+            </div>
+          )}
+        </main>
+      </div>
+    </div>
+  );
+}

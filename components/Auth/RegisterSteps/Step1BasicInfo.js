@@ -7,11 +7,11 @@ export default function Step1BasicInfo({ userData, updateUserData, goToNextStep 
   const validateForm = () => {
     const newErrors = {};
     
-    // Valider e-post
+    // Valider e-post med mer robust regex
     if (!userData.email) {
       newErrors.email = 'E-post er påkrevd';
-    } else if (!/\S+@\S+\.\S+/.test(userData.email)) {
-      newErrors.email = 'Vennligst oppgi en gyldig e-postadresse';
+    } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(userData.email)) {
+      newErrors.email = 'Vennligst oppgi en gyldig e-postadresse (f.eks. navn@domene.no)';
     }
     
     // Valider passord

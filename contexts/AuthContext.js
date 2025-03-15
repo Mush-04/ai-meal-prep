@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { useRouter } from 'next/router';
 
 const AuthContext = createContext({
   user: null,
@@ -14,6 +15,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     const initAuth = async () => {
@@ -45,13 +47,46 @@ export const AuthProvider = ({ children }) => {
 
   const signUp = async (email, password) => {
     try {
+      // Valider e-post format før vi sender til Supabase
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailRegex.test(email)) {
+        throw {
+          name: "ValidationError",
+          message: "E-postadressen er ikke gyldig",
+          code: "email_address_invalid"
+        };
+      }
+
+      // Fjern eventuelle mellomrom i e-postadressen
+      const cleanEmail = email.trim();
+      
+      // Definer redirect URL, sjekk om window er tilgjengelig (kun på klientsiden)
+      const options = {
+        emailRedirectTo: typeof window !== 'undefined' 
+          ? `${window.location.origin}/profil` 
+          : undefined
+      };
+      
       const { data, error } = await supabase.auth.signUp({
-        email,
+        email: cleanEmail,
         password,
+        options
       });
+      
       if (error) throw error;
-      return data;
+      
+      // Logg data for debugging
+      console.log("Supabase signUp response:", data);
+      
+      // Returner data selv om user.id ikke finnes (kan være null ved e-postbekreftelse)
+      return { 
+        data: {
+          user: data.user,
+          session: data.session
+        } 
+      };
     } catch (error) {
+      console.error("SignUp error:", error);
       throw error;
     }
   };
@@ -85,10 +120,12 @@ export const AuthProvider = ({ children }) => {
       if (error && error.message !== 'Auth session missing!') {
         console.error('Utloggingsfeil:', error.message);
       }
+      router.push('/');
     } catch (error) {
       console.error('Utloggingsfeil:', error.message);
       // Sett brukeren til null uansett for å sikre lokal utlogging
       setUser(null);
+      router.push('/');
     }
   };
 

@@ -154,6 +154,19 @@ export default function Admin() {
     };
   }, [user, isAdmin, fetchAdminData]);
 
+  useEffect(() => {
+    const handleRouteChange = (url) => {
+      if (!url.includes('/admin') && !url.includes('/dashboard')) {
+        signOut();
+      }
+    };
+
+    router.events.on('routeChangeStart', handleRouteChange);
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange);
+    };
+  }, [router, signOut]);
+
   // Behandle måltidsdata for grafer
   const processMealsByDay = (mealsData) => {
     // Hvis ingen data, bruk demodata

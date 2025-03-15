@@ -20,7 +20,8 @@ export default function MultiStepRegisterForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [direction, setDirection] = useState(1); // 1 for fremover, -1 for bakover
-  
+  const [success, setSuccess] = useState('');
+
   // Brukerdata
   const [userData, setUserData] = useState({
     // Trinn 1: Grunnleggende informasjon
@@ -40,6 +41,8 @@ export default function MultiStepRegisterForm() {
     activityLevel: 'moderat',
     weight: '',
     height: '',
+    currentWeight: '',
+    targetWeight: '',
     
     // Trinn 4: Medlemskapsnivå
     membershipTier: 'premium',
@@ -54,63 +57,148 @@ export default function MultiStepRegisterForm() {
   const goToNextStep = () => {
     setDirection(1);
     setCurrentStep(prev => prev + 1);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   // Gå til forrige trinn
   const goToPreviousStep = () => {
     setDirection(-1);
     setCurrentStep(prev => prev - 1);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   // Håndter registrering
-  const handleRegistration = async () => {
+  const handleRegister = async () => {
     setLoading(true);
     setError('');
+    setSuccess('');
 
     try {
-      // 1. Registrer brukeren med Supabase Auth
-      const { data: authData, error: authError } = await signUp(userData.email, userData.password);
+      // Ekstra validering av brukerdata før registrering
+      if (!userData.email || !userData.password || !userData.firstName || !userData.lastName) {
+        throw { message: 'Vennligst fyll ut alle påkrevde felt' };
+      }
       
-      if (authError) throw authError;
+      if (userData.password !== userData.confirmPassword) {
+        throw { message: 'Passordene matcher ikke' };
+      }
+      
+      if (userData.password.length < 6) {
+        throw { message: 'Passordet må være minst 6 tegn' };
+      }
+      
+      // 1. Registrer brukeren med Supabase Auth
+      const authResponse = await signUp(userData.email, userData.password);
+      
+      console.log("Auth response:", authResponse);
+      
+      if (!authResponse || !authResponse.data) {
+        throw { message: 'Kunne ikke opprette brukerkonto. Vennligst prøv igjen.' };
+      }
+      
+      const { user, session } = authResponse.data;
+      
+      // Håndter tilfeller der e-postbekreftelse er påkrevd
+      if (!user || !user.id) {
+        setSuccess('En bekreftelseslink er sendt til din e-post. Vennligst sjekk innboksen din og bekreft e-postadressen for å fullføre registreringen.');
+        setLoading(false);
+        return;
+      }
       
       // 2. Lagre tilleggsinformasjon i Supabase-tabellen
       const { error: profileError } = await supabase
         .from('profiles')
         .insert([
           {
-            id: authData.user.id,
+            id: user.id,
             first_name: userData.firstName,
             last_name: userData.lastName,
-            dietary_restrictions: userData.dietaryRestrictions,
-            allergies: userData.allergies,
-            disliked_ingredients: userData.dislikedIngredients,
-            health_goals: userData.healthGoals,
-            activity_level: userData.activityLevel,
+            dietary_restrictions: userData.dietaryRestrictions || [],
+            allergies: userData.allergies || [],
+            disliked_ingredients: userData.dislikedIngredients || [],
+            health_goals: userData.healthGoals || [],
+            activity_level: userData.activityLevel || 'moderat',
             weight: userData.weight || null,
             height: userData.height || null,
-            membership_tier: userData.membershipTier
+            current_weight: userData.currentWeight || null,
+            target_weight: userData.targetWeight || null,
+            membership_tier: userData.membershipTier || 'premium'
           }
         ]);
       
-      if (profileError) throw profileError;
+      if (profileError) {
+        console.error("Profile error:", profileError);
+        throw profileError;
+      }
       
-      // 3. Omdiriger til hjemmesiden ved vellykket registrering
-      router.push('/');
+      // Vis suksessmelding hvis e-postbekreftelse er påkrevd (ingen aktiv sesjon)
+      if (!session) {
+        setSuccess('En bekreftelseslink er sendt til din e-post. Vennligst sjekk innboksen din og bekreft e-postadressen for å fullføre registreringen.');
+        setLoading(false);
+        return;
+      }
+      
+      // 3. Omdiriger til profilsiden ved vellykket registrering
+      router.push('/profil');
       
     } catch (err) {
       console.error('Registreringsfeil:', err);
-      setError(
-        err.message === 'User already registered'
-          ? 'E-posten er allerede registrert'
-          : 'Det oppstod en feil under registreringen. Vennligst prøv igjen.'
-      );
-      return Promise.reject(err);
+      
+      // Mer spesifikk feilhåndtering basert på feilkode
+      if (err.code === 'email_address_invalid' || (err.message && err.message.includes('email'))) {
+        setError('E-postadressen er ikke gyldig. Vennligst bruk et gyldig format (f.eks. navn@domene.no)');
+      } else if (err.code === 'user_already_registered' || err.message === 'User already registered') {
+        setError('E-posten er allerede registrert. Vennligst bruk en annen e-postadresse eller logg inn.');
+      } else if (err.message && typeof err.message === 'string') {
+        setError(err.message);
+      } else {
+        setError('Det oppstod en feil under registreringen. Vennligst prøv igjen.');
+      }
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // Initialiser userData med tomme verdier for å unngå ukontrollerte inputs
+    setUserData(prevData => ({
+      ...prevData,
+      healthGoals: prevData.healthGoals || [],
+      dietaryRestrictions: prevData.dietaryRestrictions || [],
+      allergies: prevData.allergies || [],
+      dislikedIngredients: prevData.dislikedIngredients || [],
+      activityLevel: prevData.activityLevel || 'moderat',
+      currentWeight: prevData.currentWeight || '',
+      targetWeight: prevData.targetWeight || '',
+      membershipTier: prevData.membershipTier || 'premium'
+    }));
+
+    // Sjekk om det er en returnert bruker fra Supabase Auth (etter e-postbekreftelse)
+    const checkForReturnedUser = async () => {
+      if (typeof window !== 'undefined') {
+        const hash = window.location.hash;
+        if (hash && hash.includes('access_token')) {
+          // Bruker har bekreftet e-post og returnert til appen
+          try {
+            const { data, error } = await supabase.auth.getUser();
+            if (error) throw error;
+            if (data && data.user) {
+              // Omdiriger til profilsiden
+              router.push('/profil');
+            }
+          } catch (err) {
+            console.error('Feil ved håndtering av returnert bruker:', err);
+          }
+        }
+      }
+    };
+
+    checkForReturnedUser();
+  }, [router]);
 
   // Animasjonsvarianter
   const pageVariants = {
@@ -184,7 +272,7 @@ export default function MultiStepRegisterForm() {
           <Step5Confirmation 
             userData={userData} 
             updateUserData={updateUserData}
-            handleRegister={handleRegistration} 
+            handleRegister={handleRegister} 
             goToPreviousStep={goToPreviousStep} 
           />
         );
@@ -203,6 +291,16 @@ export default function MultiStepRegisterForm() {
           className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 shadow-lg"
         >
           {error}
+        </motion.div>
+      )}
+      {success && (
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 shadow-lg"
+        >
+          {success}
         </motion.div>
       )}
       

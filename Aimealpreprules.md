@@ -42,7 +42,7 @@
 **TRINN 4: MÅLTIDGENERERING**  
 - **Input-felt:**  
   - Tekstboks: "Skriv eller lim inn ingredienser (eks: kylling, ris, paprika)...".  
-  - Bildeopplastning: "Last opp bilde av matvarer" (med ChatGPT-4o Vision).  
+  - Bildeopplastning: "Last opp bilde av matvarer" (med ChatGPT-4o Vision)  
   - Radioknapper: "Øk vekt", "Reduser vekt", "Behold vekt".  
   - Kaloriskråd: "Daglig kalorimål" (valgfri tallinput).  
   - Hjelpeknapp: "Vet ikke hva jeg skal lage" (åpner inspirasjonsspørreskjema).  
