@@ -6,12 +6,12 @@
   NODE_VERSION = "18.17.0"
   NPM_VERSION = "9.6.7"
 
-# Fjerner plugins-seksjonen som kan forårsake syntaksproblemer
-# [[plugins]]
-#   package = "@netlify/plugin-nextjs"
+# Aktiverer Netlify Next.js plugin igjen, men med riktig syntaks
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
-# Forenkler redirects-seksjonen
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# Fjerner unødvendig redirect som kan forårsake problemer
+# [[redirects]]
+#   from = "/*"
+#   to = "/index.html"
+#   status = 200
