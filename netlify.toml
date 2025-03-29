@@ -6,9 +6,11 @@
   NODE_VERSION = "18.17.0"
   NPM_VERSION = "9.6.7"
 
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
+# Fjerner plugins-seksjonen som kan forårsake syntaksproblemer
+# [[plugins]]
+#   package = "@netlify/plugin-nextjs"
 
+# Forenkler redirects-seksjonen
 [[redirects]]
   from = "/*"
   to = "/index.html"
